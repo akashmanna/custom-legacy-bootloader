@@ -96,8 +96,6 @@ dw 0xaa55
 
 
 copy_target:
-bits 32
-	hello: db "Hello more than 512 bytes world!!",0
 
 section .bss
 align 4
