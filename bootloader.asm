@@ -62,10 +62,20 @@ boot2:
 	jmp .println
 
 halt:
-	cli	
+	mov esp,kernel_stack_top
+	extern kmain
+	call kmain
+	cli
 	hlt
 
 text: db "Protected Mode ON!",0
 
 times 510 - ($-$$) db 0
 dw 0xaa55
+
+
+section .bss
+align 4
+kernel_stack_bottom: equ $
+	resb 16384 ; 16 KB
+kernel_stack_top:
