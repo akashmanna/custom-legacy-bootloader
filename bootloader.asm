@@ -9,9 +9,9 @@ boot:
 	cli
 	lgdt [gdt_pointer]
 	mov eax, cr0
-	or eax,0x1
+	or eax,0x1 				; Set first bit of cr0 - protected mode 
 	mov cr0, eax
-	jmp CODE_SEG:boot2
+	jmp CODE_SEG:boot2 		; Far jump to Flush pipelined instructions
 
 
 ;GDT Declarations
@@ -65,7 +65,7 @@ halt:
 	cli
 	hlt
 
-text: db "Hello from the protected side!",0
+text: db "Protected Mode ON!",0
 
 times 510 - ($-$$) db 0
 dw 0xaa55
