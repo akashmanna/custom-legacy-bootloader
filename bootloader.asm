@@ -1,17 +1,35 @@
+section .boot
 bits 16
-org 0x7c00
-
+global boot
 boot:
 	mov ax, 0x2401
 	int 0x15 								; A20 bit
 	mov ax, 0x3
 	int 0x10 								; VGA - text mode
+	
+	mov [disk],dl			; disk number
+
+	mov ah, 0x2    			;read sectors INT 0x13 
+	mov al, 6      			;sectors to read
+	mov ch, 0      			;cylinder idx
+	mov dh, 0      			;head idx
+	mov cl, 2      			;sector idx
+	mov dl, [disk] 			;disk idx
+	mov bx, copy_target		;target pointer
+	int 0x13				;INT to read sector
+
 	cli
 	lgdt [gdt_pointer]
 	mov eax, cr0
-	or eax,0x1 				; Set first bit of cr0 - protected mode 
+	or eax,0x1
 	mov cr0, eax
-	jmp CODE_SEG:boot2 		; Far jump to Flush pipelined instructions
+	mov ax, DATA_SEG
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	mov ss, ax
+	jmp CODE_SEG:boot2
 
 
 ;GDT Declarations
@@ -38,6 +56,9 @@ gdt_pointer:
 	dw gdt_end - gdt_start
 	dd gdt_start
 
+disk:
+	db 0x0
+
 CODE_SEG equ gdt_code - gdt_start
 DATA_SEG equ gdt_data - gdt_start
 
@@ -63,16 +84,20 @@ boot2:
 
 halt:
 	mov esp,kernel_stack_top
-	extern kmain
-	call kmain
+	extern main
+	call main
 	cli
 	hlt
 
-text: db "Protected Mode ON!",0
+text: db "Protected Mode",0
 
 times 510 - ($-$$) db 0
 dw 0xaa55
 
+
+copy_target:
+bits 32
+	hello: db "Hello more than 512 bytes world!!",0
 
 section .bss
 align 4
