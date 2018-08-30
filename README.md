@@ -11,4 +11,5 @@ qemu (simulator for x86_64 system)
 make bootloader.bin  
 
 2. Running binary using qemu  
+make clean   
 make run  
