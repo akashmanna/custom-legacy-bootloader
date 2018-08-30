@@ -15,22 +15,24 @@ boot:
 
 
 ;GDT Declarations
+;Intel Basic Flat model - has code seg and data seg same 
+;Access bit[4] is 1 for code segment, see Intel x86 instructions
 gdt_start:
 	dq 0x0
 gdt_code:
-	dw 0xFFFF			; LIMIT - LOW
-	dw 0x0 				; BASE - LOW
-	db 0x0 				; BASE - MID
+	dw 0xFFFF			; LIMIT - LOW 
+	dw 0x0 				; BASE - LOW 
+	db 0x0 				; BASE - MID 
 	db 10011010b  		; ACCESS BITS
 	db 11001111b 		; | FLAGS | LIMIT - HIGH |
 	db 0x0 				; BASE - HIGH
 gdt_data:
-	dw 0xFFFF
-	dw 0x0
-	db 0x0
-	db 10010010b
-	db 11001111b
-	db 0x0
+	dw 0xFFFF			; LIMIT - LOW
+	dw 0x0 				; BASE - LOW
+	db 0x0 				; BASE - MID
+	db 10010010b 		; ACCESS BITS
+	db 11001111b 		; | FLAGS | LIMIT - HIGH |
+	db 0x0 				; BASE - HIGH
 gdt_end:
 gdt_pointer:
 	dw gdt_end - gdt_start
