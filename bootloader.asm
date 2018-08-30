@@ -62,7 +62,7 @@ boot2:
 	jmp .println
 
 halt:
-	cli
+	cli	
 	hlt
 
 text: db "Protected Mode ON!",0
